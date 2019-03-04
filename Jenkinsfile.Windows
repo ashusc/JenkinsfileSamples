@@ -1,0 +1,31 @@
+pipeline {
+    agent { 
+        label 'windows'
+    }
+    stages {
+	stage('Clean Stage') {
+            steps {
+                echo 'CleanAndCompile Stage'
+                withMaven(maven: 'Place_Maven_Global_name_on_Jenkins'){
+   		    bat 'mvn -f path/to/pom.xml clean'
+                }
+            }
+        }
+        stage('VerifyAndBuild Stage') {
+            steps {
+                echo 'Testing..'
+                withMaven(maven: 'Place_Maven_Global_name_on_Jenkins'){
+                    bat 'mvn -f path/to/pom.xml verify -Dcucumber.options="--tags @AnyTag"'
+                }
+            }
+        }
+        stage('Deploy Stage') {
+            steps {
+                echo 'Deploying....'
+                withMaven(maven: 'Place_Maven_Global_name_on_Jenkins'){
+                    bat 'mvn -f path/to/pom.xml install'
+                }
+            }
+        }
+    }
+}
